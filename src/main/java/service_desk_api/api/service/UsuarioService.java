@@ -15,7 +15,6 @@ public class UsuarioService {
 	}
 	
 	public Usuario save(Usuario usuario) {
-		System.out.println("Cheguei aqui no save do UsuarioService. Olha o email dele: " + usuario.getEmail());
 		return repository.save(usuario);
 	}
 
