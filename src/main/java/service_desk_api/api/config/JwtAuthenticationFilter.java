@@ -15,7 +15,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import service_desk_api.api.dto.JwtUtil;
+import service_desk_api.api.security.JwtUtil;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
