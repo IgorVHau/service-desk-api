@@ -43,10 +43,9 @@ public class GlobalExceptionHandler {
 				? "O campo status não foi preenchido com o valor correto. Por favor, escolha entre as opções: "
 						+ Status.ABERTO + ", " + Status.EM_ANDAMENTO + ", " + Status.CONCLUIDO
 				: ex.getMessage();
-		System.out.println("Not Readable: ");
 		return ResponseEntity
-				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(ApiResponse.error("Erro de serialização: " + message, HttpStatus.INTERNAL_SERVER_ERROR.value()));
+				.status(HttpStatus.BAD_REQUEST)
+				.body(ApiResponse.error(message, HttpStatus.BAD_REQUEST.value()));
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
