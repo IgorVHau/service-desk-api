@@ -19,20 +19,25 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 ## 🔄 Fase 2 – Consolidação (Atual)
 - [x] Diagrama de arquitetura
 - [x] Melhorar documentação de execução e consumo da API
-- [ ] Melhorar cobertura de testes
-- [ ] Padronizar mensagens de erro
+- [x] Dockerização da aplicação
+- [ ] Corrigir e padronizar o tratamento de exceções
+- [ ] Reorganizar componentes nos pacotes adequados
 - [ ] Refinar DTOs de entrada e saída
+- [ ] Melhorar cobertura de testes
 
 ---
 
-## 🚀 Fase 3 – Evoluções futuras (Opcional)
-- [ ] Paginação e ordenação de chamados
-- [ ] Filtros por status e data
-- [ ] Integração com banco PostgreSQL
-- [ ] Dockerização da aplicação
-- [ ] Pipeline CI básico (GitHub Actions)
+## 🚀 Fase 3 – Automação e infraestrutura
+- [ ] Criar pipeline de CI com GitHub Actions
+- [ ] Integrar a aplicação com PostgreSQL
+- [ ] Adicionar testes de integração
+- [ ] Avaliar migrations com Flyway ou Liquibase
 
 ---
 
-📌 **Observação**  
-Este projeto é voltado para estudo, evolução técnica e demonstração de boas práticas no ecossistema Spring.
+## 🌱 Fase 4 – Evolução do domínio
+
+- [ ] Padronizar os nomes das classes
+- [ ] Adicionar paginação e ordenação
+- [ ] Implementar filtros por status e data
+- [ ] Evoluir entidades e relacionamentos do domínio
