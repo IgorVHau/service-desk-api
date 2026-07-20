@@ -15,7 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import service_desk_api.api.dto.LoginRequest;
-import service_desk_api.api.dto.JwtUtil;
+import service_desk_api.api.security.JwtUtil;
 
 @RestController
 @RequestMapping("/auth")

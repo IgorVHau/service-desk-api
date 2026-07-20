@@ -1,4 +1,4 @@
-package service_desk_api.api.dto;
+package service_desk_api.api.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -55,7 +55,6 @@ public class JwtUtil {
 	}
 	
 	private Claims extractAllClaims(String token) {
-		System.out.println(token);
 		return Jwts.parserBuilder()
 				.setSigningKey(generateKey(SECRET_KEY))
 				.build()
