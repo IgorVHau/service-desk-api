@@ -43,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 		
-		System.out.println(authHeader);
 		
 		final String jwt = authHeader.substring(7);
 		String username = null;
@@ -51,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			username = jwtUtil.extractEmail(jwt);
 		} catch (Exception e) {
-			System.out.println("Token inválido recebido no header: " + e.getMessage());
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -68,8 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				
 				SecurityContextHolder.getContext().setAuthentication(authToken);
-				System.out.println("Usuário autenticado no filtro: " + username);
-				System.out.println("Contexto atual: " + SecurityContextHolder.getContext().getAuthentication());
 			}
 		}
 		
