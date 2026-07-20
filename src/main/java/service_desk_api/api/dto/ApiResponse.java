@@ -2,6 +2,8 @@ package service_desk_api.api.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 	
 	private LocalDateTime timestamp;
@@ -32,7 +35,6 @@ public class ApiResponse<T> {
 				.timestamp(LocalDateTime.now())
 				.status(statusCode)
 				.message(message)
-				.data(null)
 				.build();
 	}
 
