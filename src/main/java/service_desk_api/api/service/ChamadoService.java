@@ -33,7 +33,6 @@ public class ChamadoService {
 	}
 	
 	public Chamado criar(Chamado chamado) {
-		System.out.println("Status: " + chamado.getStatus().toString());
 		return repository.save(chamado);
 	}
 	
