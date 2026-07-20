@@ -51,7 +51,7 @@ class ChamadoControllerTest {
 			.andExpect(jsonPath("$.timestamp").isNotEmpty())
 			.andExpect(jsonPath("$.status").value(404))
 			.andExpect(jsonPath("$.message").value("Chamado não encontrado."))
-			.andExpect(jsonPath("$.data").isEmpty());
+			.andExpect(jsonPath("$.data").doesNotExist());
 	}
 	
 	@DisplayName(value = "Deve retornar 422 ao tentar atualizar chamado concluído")
@@ -73,7 +73,7 @@ class ChamadoControllerTest {
 		.andExpect(status().isUnprocessableEntity())
 		.andExpect(jsonPath("$.status").value(422))
 		.andExpect(jsonPath("$.message").value("Chamado concluído não pode ser alterado."))
-		.andExpect(jsonPath("$.data").isEmpty());
+		.andExpect(jsonPath("$.data").doesNotExist());
 	}
 	
 	@DisplayName(value = "Deve retornar 200 ao atualizar chamado existente com status diferente de concluído")
