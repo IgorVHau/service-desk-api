@@ -2,20 +2,42 @@ package service_desk_api.api.exception;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.servlet.http.HttpServletRequest;
 import service_desk_api.api.dto.ApiResponse;
 import service_desk_api.api.model.Status;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 
+import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	private ProblemDetail buildProblem(
+			URI type,
+			String title,
+			HttpStatus status,
+			String detail,
+			HttpServletRequest request
+			) {
+		
+		ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
+		
+		problem.setType(type);
+		problem.setTitle(title);
+		problem.setInstance(URI.create(request.getRequestURI()));
+		problem.setProperty("timestamp", LocalDateTime.now());
+		
+		return problem;
+	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ApiResponse<?>> handleValidationErrors(MethodArgumentNotValidException ex) {
@@ -49,10 +71,19 @@ public class GlobalExceptionHandler {
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ApiResponse<?>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+	public ResponseEntity<ProblemDetail> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
+		String message = ex.getMessage();
+		
+		ProblemDetail problem = buildProblem(
+				URI.create("about:blank"),
+				"Não encontrado",
+				HttpStatus.NOT_FOUND,
+				message,
+				request);
+		
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
-				.body(ApiResponse.error(ex.getMessage(), HttpStatus.NOT_FOUND.value()));
+				.body(problem);
 	}
 	
 	@ExceptionHandler(BusinessException.class)

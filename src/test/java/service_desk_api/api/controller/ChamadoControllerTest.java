@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.hamcrest.Matchers.containsString;
 
 import org.junit.jupiter.api.DisplayName;
@@ -138,21 +139,26 @@ class ChamadoControllerTest {
 	@Test
 	void deveRetornar404QuandoBuscarPorIdInexistente() throws Exception {
 		
-		when(chamadoService.buscarPorIdOuFalhar(99L)).thenThrow(new ResourceNotFoundException("Chamado não encontrado."));
+		when(chamadoService.buscarPorIdOuFalhar(99L)).thenThrow(
+				new ResourceNotFoundException("Chamado não encontrado."));
 		
 		mockMvc.perform(get("/chamados/99"))
 			.andExpect(status().isNotFound())
-			.andExpect(jsonPath("$.timestamp").isNotEmpty())
+			.andExpect(jsonPath("$.type").isNotEmpty())
+			.andExpect(jsonPath("$.title").value("Não encontrado"))
 			.andExpect(jsonPath("$.status").value(404))
-			.andExpect(jsonPath("$.message").value("Chamado não encontrado."))
-			.andExpect(jsonPath("$.data").doesNotExist());
+			.andExpect(jsonPath("$.detail").value("Chamado não encontrado."))
+			.andExpect(jsonPath("$.instance").value("/chamados/99"))
+			.andExpect(content()
+					.contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 	}
 	
 	@DisplayName(value = "Deve retornar 422 ao tentar atualizar chamado concluído")
 	@Test
 	void deveRetornar422QuandoAtualizarChamadoConcluido() throws Exception {
 		
-		when(chamadoService.atualizar(anyLong(), any())).thenThrow(new BusinessException("Chamado concluído não pode ser alterado."));
+		when(chamadoService.atualizar(anyLong(), any())).thenThrow(
+				new BusinessException("Chamado concluído não pode ser alterado."));
 		
 		mockMvc.perform(put("/chamados/1")
 				.contentType(MediaType.APPLICATION_JSON)
