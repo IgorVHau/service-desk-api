@@ -58,9 +58,12 @@ class ChamadoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
 		.andExpect(status().isBadRequest())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Requisição inválida"))
 		.andExpect(jsonPath("$.status").value(400))
-		.andExpect(jsonPath("$.message").value(containsString("Unrecognized field")))
-		.andExpect(jsonPath("$.data").doesNotExist());
+		.andExpect(jsonPath("$.detail").value(containsString("Campo desconhecido")))
+		.andExpect(jsonPath("$.instance").value("/chamados"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 		
 		verifyNoInteractions(chamadoService);
 	}
@@ -80,9 +83,12 @@ class ChamadoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
 		.andExpect(status().isBadRequest())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Requisição inválida"))
 		.andExpect(jsonPath("$.status").value(400))
-		.andExpect(jsonPath("$.message").value("Erro de validação: O título é obrigatório."))
-		.andExpect(jsonPath("$.data").doesNotExist());
+		.andExpect(jsonPath("$.detail").value(containsString("Erro de validação")))
+		.andExpect(jsonPath("$.instance").value("/chamados"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 		
 		verifyNoInteractions(chamadoService);
 	}
@@ -99,15 +105,16 @@ class ChamadoControllerTest {
 		}
 			""";
 		
-		String expectedMessage = "O campo status não foi preenchido com o valor correto. Por favor, escolha entre as opções: ABERTO, EM_ANDAMENTO, CONCLUIDO";
-		
 		mockMvc.perform(post("/chamados")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
 		.andExpect(status().isBadRequest())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Requisição inválida"))
 		.andExpect(jsonPath("$.status").value(400))
-		.andExpect(jsonPath("$.message").value(expectedMessage))
-		.andExpect(jsonPath("$.data").doesNotExist());
+		.andExpect(jsonPath("$.detail").value(containsString("ABERTO, EM_ANDAMENTO, CONCLUIDO")))
+		.andExpect(jsonPath("$.instance").value("/chamados"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 		
 		verifyNoInteractions(chamadoService);
 	}
@@ -128,9 +135,12 @@ class ChamadoControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
 		.andExpect(status().isBadRequest())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Requisição inválida"))
 		.andExpect(jsonPath("$.status").value(400))
-		.andExpect(jsonPath("$.message").isNotEmpty())
-		.andExpect(jsonPath("$.data").doesNotExist());
+		.andExpect(jsonPath("$.detail").value(containsString("JSON malformado")))
+		.andExpect(jsonPath("$.instance").value("/chamados"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 		
 		verifyNoInteractions(chamadoService);
 	}
@@ -144,13 +154,37 @@ class ChamadoControllerTest {
 		
 		mockMvc.perform(get("/chamados/99"))
 			.andExpect(status().isNotFound())
-			.andExpect(jsonPath("$.type").isNotEmpty())
+			.andExpect(jsonPath("$.type").value("about:blank"))
 			.andExpect(jsonPath("$.title").value("Não encontrado"))
 			.andExpect(jsonPath("$.status").value(404))
 			.andExpect(jsonPath("$.detail").value("Chamado não encontrado."))
 			.andExpect(jsonPath("$.instance").value("/chamados/99"))
 			.andExpect(content()
 					.contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+	}
+	
+	@DisplayName(value = "Deve retornar 404 quando recurso não existir")
+	@Test
+	void deveRetornar404QuandoRecursoNaoExistir() throws Exception {
+		
+		mockMvc.perform(put("/chamado")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+							"titulo": "Teste na API",
+							"descricao": "Recurso inexistente"
+							"status": "ABERTO"
+						}
+						"""))
+		.andExpect(status().isNotFound())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Não encontrado"))
+		.andExpect(jsonPath("$.status").value(404))
+		.andExpect(jsonPath("$.detail").value("O recurso solicitado não foi encontrado."))
+		.andExpect(jsonPath("$.instance").value("/chamado"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+		
+		verifyNoInteractions(chamadoService);
 	}
 	
 	@DisplayName(value = "Deve retornar 422 ao tentar atualizar chamado concluído")
@@ -171,9 +205,38 @@ class ChamadoControllerTest {
 						"""
 				))
 		.andExpect(status().isUnprocessableEntity())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Conteúdo não processável"))
 		.andExpect(jsonPath("$.status").value(422))
-		.andExpect(jsonPath("$.message").value("Chamado concluído não pode ser alterado."))
-		.andExpect(jsonPath("$.data").doesNotExist());
+		.andExpect(jsonPath("$.detail").value("Chamado concluído não pode ser alterado."))
+		.andExpect(jsonPath("$.instance").value("/chamados/1"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+	}
+	
+	@DisplayName(value = "Deve retornar 500 quando ocorrer algum erro interno")
+	@Test
+	void deveRetornar500QuandoOcorrerAlgumErroInterno() throws Exception {
+		
+		when(chamadoService.atualizar(anyLong(), any()))
+			.thenThrow(new RuntimeException("Falha simulada"));
+		
+		mockMvc.perform(put("/chamados/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+							"titulo": "Teste",
+							"descricao": "Teste",
+							"status": "ABERTO"
+						}
+						"""
+					))
+		.andExpect(status().isInternalServerError())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Erro interno do servidor"))
+		.andExpect(jsonPath("$.status").value(500))
+		.andExpect(jsonPath("$.detail").value("Ocorreu um erro interno ao processar a solicitação."))
+		.andExpect(jsonPath("$.instance").value("/chamados/1"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 	}
 	
 	@DisplayName(value = "Deve retornar 200 ao atualizar chamado existente com status diferente de concluído")
@@ -189,7 +252,6 @@ class ChamadoControllerTest {
 		
 		when(chamadoService.atualizar(eq(1L), any(Chamado.class))).thenReturn(chamadoAtualizado);
 		
-		//Act
 		mockMvc.perform(put("/chamados/1")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
