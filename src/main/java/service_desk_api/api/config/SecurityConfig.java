@@ -70,7 +70,6 @@ public class SecurityConfig { //extends WebSecurityConfiguration {
 	@Bean
 	public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, 
 			PasswordEncoder passwordEncoder) {
-		System.out.println("AuthenticationProvider aqui");
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(userDetailsService);
 		provider.setPasswordEncoder(passwordEncoder);

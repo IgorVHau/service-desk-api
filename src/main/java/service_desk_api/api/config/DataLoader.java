@@ -27,7 +27,6 @@ public class DataLoader {
 						"ADMIN"
 						);
 				repository.save(admin);
-				System.out.println("ADMINISTRADOR CRIADO COM SUCESSO!!!");
 			}
 			if(repository.findByEmail("user@email.com").isEmpty()) {
 				Usuario user = new Usuario(
@@ -37,7 +36,6 @@ public class DataLoader {
 						"USER"
 						);
 				repository.save(user);
-				System.out.println("USUÁRIO CRIADO COM SUCESSO!!!");
 			}
 			if(chamadoRepository.findAll().isEmpty()) {
 				Chamado chamado = Chamado.builder()
@@ -48,7 +46,6 @@ public class DataLoader {
 					.atualizadoEm(LocalDateTime.now())
 					.build();
 				chamadoRepository.save(chamado);
-				System.out.println("CHAMADO CRIADO COM SUCESSO!!!");
 			}
 		};
 		

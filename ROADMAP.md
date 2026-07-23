@@ -20,7 +20,7 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 - [x] Diagrama de arquitetura
 - [x] Melhorar documentação de execução e consumo da API
 - [x] Dockerização da aplicação
-- [ ] Corrigir e padronizar o tratamento de exceções
+- [x] Corrigir e padronizar o tratamento de exceções
 - [ ] Reorganizar componentes nos pacotes adequados
 - [ ] Refinar DTOs de entrada e saída
 - [ ] Melhorar cobertura de testes

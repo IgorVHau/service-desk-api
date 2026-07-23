@@ -35,7 +35,6 @@ public class AuthController {
 				);
 			
 			String token = jwtUtil.generateToken(request.getEmail());
-			System.out.println("Token gerado: " + token);
 			return ResponseEntity.ok(Collections.singletonMap("token", token));
 		} catch (BadCredentialsException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
