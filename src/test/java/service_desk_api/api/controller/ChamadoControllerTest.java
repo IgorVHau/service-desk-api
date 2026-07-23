@@ -172,7 +172,7 @@ class ChamadoControllerTest {
 				.content("""
 						{
 							"titulo": "Teste na API",
-							"descricao": "Recurso inexistente"
+							"descricao": "Recurso inexistente",
 							"status": "ABERTO"
 						}
 						"""))
