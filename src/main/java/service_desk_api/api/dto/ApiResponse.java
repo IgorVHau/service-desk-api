@@ -29,13 +29,5 @@ public class ApiResponse<T> {
 				.data(data)
 				.build();
 	}
-	
-	public static <T> ApiResponse<T> error(String message, int statusCode) {
-		return ApiResponse.<T>builder()
-				.timestamp(LocalDateTime.now())
-				.status(statusCode)
-				.message(message)
-				.build();
-	}
 
 }
