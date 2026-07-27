@@ -2,12 +2,7 @@ package service_desk_api.api.model;
 
 import java.time.LocalDateTime;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -37,19 +32,22 @@ public class Chamado {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@JsonFormat(pattern="dd/MM/yyyy hh:mm:ss")
+	@NotNull(message = "A prioridade deve ser preenchida.")
+	@Enumerated(EnumType.STRING)
+	private Prioridade prioridade;
+	
+	@NotNull(message = "A categoria deve ser preenchida.")
+	@Enumerated(EnumType.STRING)
+	private Categoria categoria;
+	
 	@PastOrPresent(message = "A data de criação não pode estar no futuro.")
 	private LocalDateTime criadoEm;
 	
-	@JsonFormat(pattern="dd/MM/yyyy hh:mm:ss")
 	@PastOrPresent(message = "A data de atualização não pode estar no futuro.")
 	private LocalDateTime atualizadoEm;
 	
-	public Chamado(String titulo, String descricao, Status status) {
-		this.titulo = titulo;
-		this.descricao = descricao;
-		this.status = status;
-	}
+	@PastOrPresent(message = "A data de conclusão não pode estar no futuro.")
+	private LocalDateTime concluidoEm;
 	
 	@PrePersist
 	protected void onCreate() {

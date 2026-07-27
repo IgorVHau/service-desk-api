@@ -7,7 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
+import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 import service_desk_api.api.model.Usuario;
 import service_desk_api.api.repository.ChamadoRepository;
@@ -42,6 +44,8 @@ public class DataLoader {
 					.titulo("Acesso negado ao servidor remoto")
 					.descricao("O usuário Rodolfo não consegue acessar o servidor da LightyearX. Conceder acesso ao funcionário.")
 					.status(Status.ABERTO)
+					.prioridade(Prioridade.MEDIA)
+					.categoria(Categoria.SOLICITACAO)
 					.criadoEm(LocalDateTime.now())
 					.atualizadoEm(LocalDateTime.now())
 					.build();

@@ -25,7 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import service_desk_api.api.exception.BusinessException;
 import service_desk_api.api.exception.ResourceNotFoundException;
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
+import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 import service_desk_api.api.service.ChamadoService;
 
@@ -50,7 +52,9 @@ class ChamadoControllerTest {
 			{
 				"titulo": "Teste na API",
 				"bescricao": "Nome do campo escrito incorretamente",
-				"status": "ABERTO"
+				"status": "ABERTO",
+				"categoria": "SOFTWARE",
+				"prioridade": "ALTA"
 			}
 				""";
 		
@@ -75,7 +79,9 @@ class ChamadoControllerTest {
 		String body = """
 			{
 				"descricao": "Título ausente na resposta",
-				"status": "ABERTO"
+				"status": "ABERTO",
+				"categoria": "SOFTWARE",
+				"prioridade": "ALTA"
 			}
 				""";
 		
@@ -101,7 +107,9 @@ class ChamadoControllerTest {
 		{
 			"titulo": "Teste na API",
 			"descricao": "Valor do status inválido",
-			"status": "ABERTA"
+			"status": "ABERTA",
+			"categoria": "SOFTWARE",
+			"prioridade": "ALTA"
 		}
 			""";
 		
@@ -127,7 +135,9 @@ class ChamadoControllerTest {
 				{
 					"titulo": "Teste na API",
 					"descricao": "JSON de resposta malformado"
-					"status": "ABERTO"
+					"status": "ABERTO",
+					"categoria": "SOFTWARE",
+					"prioridade": "ALTA"
 				}
 					""";
 		
@@ -173,7 +183,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste na API",
 							"descricao": "Recurso inexistente",
-							"status": "ABERTO"
+							"status": "ABERTO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""))
 		.andExpect(status().isNotFound())
@@ -200,7 +212,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste",
 							"descricao": "Teste",
-							"status": "CONCLUIDO"
+							"status": "CONCLUIDO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""
 				))
@@ -226,7 +240,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste",
 							"descricao": "Teste",
-							"status": "ABERTO"
+							"status": "ABERTO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""
 					))
@@ -248,6 +264,8 @@ class ChamadoControllerTest {
 				.titulo("Teste")
 				.descricao("Teste")
 				.status(Status.ABERTO)
+				.categoria(Categoria.SOFTWARE)
+				.prioridade(Prioridade.ALTA)
 				.build();
 		
 		when(chamadoService.atualizar(eq(1L), any(Chamado.class))).thenReturn(chamadoAtualizado);
@@ -258,7 +276,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste",
 							"descricao": "Teste",
-							"status": "ABERTO"
+							"status": "ABERTO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""
 						))
