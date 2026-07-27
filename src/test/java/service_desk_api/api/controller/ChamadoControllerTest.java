@@ -199,6 +199,60 @@ class ChamadoControllerTest {
 		verifyNoInteractions(chamadoService);
 	}
 	
+	@DisplayName(value = "Deve retornar 405 ao usar POST em um chamado específico")
+	@Test
+	void deveRetornar405AoUsarPostEmChamadoEspecifico() throws Exception {
+		
+		mockMvc.perform(post("/chamados/2")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+							"titulo": "Teste na API",
+							"descricao": "Teste de método não permitido",
+							"status": "EM_ANDAMENTO",
+							"categoria": "REDE",
+							"prioridade": "MEDIA"
+						}
+						"""))
+		.andExpect(status().isMethodNotAllowed())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Método não permitido"))
+		.andExpect(jsonPath("$.status").value(405))
+		.andExpect(jsonPath("$.detail").value("O método HTTP utilizado não é permitido para este recurso."))
+		.andExpect(jsonPath("$.instance").value("/chamados/2"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+		
+		verifyNoInteractions(chamadoService);
+	}
+	
+	@DisplayName(value = "Deve retornar 405 ao usar PUT sem especificar um id")
+	@Test
+	void deveRetornar405AoUsarPutSemEspecificarId() throws Exception {
+		
+		mockMvc.perform(put("/chamados")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(
+						"""
+						{
+							"titulo": "Teste na API",
+							"descricao": "Teste de método não permitido",
+							"status": "EM_ANDAMENTO",
+							"categoria": "REDE",
+							"prioridade": "MEDIA"
+						}
+						"""
+						))
+		.andExpect(status().isMethodNotAllowed())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Método não permitido"))
+		.andExpect(jsonPath("$.status").value(405))
+		.andExpect(jsonPath("$.detail").value("O método HTTP utilizado não é permitido para este recurso."))
+		.andExpect(jsonPath("$.instance").value("/chamados"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+		
+		verifyNoInteractions(chamadoService);
+	}
+	
 	@DisplayName(value = "Deve retornar 422 ao tentar atualizar chamado concluído")
 	@Test
 	void deveRetornar422QuandoAtualizarChamadoConcluido() throws Exception {

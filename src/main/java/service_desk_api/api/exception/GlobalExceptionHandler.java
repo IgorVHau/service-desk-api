@@ -8,6 +8,7 @@ import service_desk_api.api.model.Status;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -125,6 +126,22 @@ public class GlobalExceptionHandler {
 		
 		return ResponseEntity
 				.status(HttpStatus.NOT_FOUND)
+				.body(problem);
+	}
+	
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<ProblemDetail> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+		
+		ProblemDetail problem = buildProblem(
+				URI.create("about:blank"),
+				"Método não permitido",
+				HttpStatus.METHOD_NOT_ALLOWED,
+				"O método HTTP utilizado não é permitido para este recurso.",
+				request
+				);
+		
+		return ResponseEntity
+				.status(HttpStatus.METHOD_NOT_ALLOWED)
 				.body(problem);
 	}
 	
