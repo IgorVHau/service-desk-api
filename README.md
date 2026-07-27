@@ -1,7 +1,7 @@
 <h1 align="center">Service Desk API</h1>
 
 <p align="center">API REST para gerenciamento de chamados desenvolvida com <b>Java 17</b> e <b>Spring Boot 3</b>.</p>
-<p align="center">O projeto demonstra a implementação de autenticação JWT, arquitetura em camadas, monitoramento com Spring Boot Actuator, documentação OpenAPI e empacotamento para produção utilizando Docker com multi-stage build.</p>
+<p align="center">O projeto demonstra a implementação de autenticação JWT, arquitetura em camadas, contratos de entrada e saída com DTOs, tratamento padronizado de erros, monitoramento com Spring Boot Actuator, documentação OpenAPI e empacotamento para produção utilizando Docker com multi-stage build.</p>
 
 <p align="center">
 	<img src="https://img.shields.io/badge/Java-17-red?labelColor=blue"/>
@@ -19,6 +19,7 @@
 - [Arquitetura](#arquitetura)
 - [Tecnologias](#tecnologias)
 - [Principais recursos](#principais-recursos)
+- [Domínio dos chamados](#domínio-dos-chamados)
 - [Execução](#execução)
 - [Segurança](#segurança)
 - [Swagger](#swagger)
@@ -95,6 +96,7 @@ end
 - **[DTO](src/main/java/service_desk_api/api/dto)** – define os dados de entrada e saída da API.
 - **[Config](src/main/java/service_desk_api/api/config)** – reúne configurações de segurança (Spring Security, JWT e filtros), OpenAPI e beans.
 - **[Exception Handler](src/main/java/service_desk_api/api/exception)** – centraliza o tratamento de exceções e a padronização das respostas.
+- **[Mapper](src/main/java/service_desk_api/api/mapper)** – realiza a conversão entre DTOs e entidades do domínio.
 
 A autenticação e a autorização são tratadas transversalmente pelo Spring Security e pelos filtros JWT. Model e DTO não aparecem no fluxo principal do diagrama porque representam estruturas de dados, e não etapas de processamento da requisição.
 
@@ -120,12 +122,26 @@ A autenticação e a autorização são tratadas transversalmente pelo Spring Se
 - Autenticação stateless com JWT
 - Controle de acesso por perfis `USER` e `ADMIN`
 - Validação de entrada com Jakarta Validation
-- Tratamento global de exceções
-- Padronização das respostas da API
+- Respostas de sucesso padronizadas com `ApiResponse`
+- Respostas de erro padronizadas com `ProblemDetail`, conforme RFC 9457
+- Contratos de entrada e saída com DTOs, evitando a exposição direta das entidades JPA
+- Registro automático das datas do chamado
 - Documentação interativa com Swagger e OpenAPI
 - Informações operacionais e de build com Spring Boot Actuator
 - Perfis separados para desenvolvimento e produção
 - Empacotamento com Docker multi-stage e execução como usuário não-root
+
+## Domínio dos chamados
+
+Cada chamado possui:
+
+- título e descrição;
+- status: `ABERTO`, `EM_ANDAMENTO` ou `CONCLUIDO`;
+- prioridade: `BAIXA`, `MEDIA`, `ALTA` ou `CRITICA`;
+- categoria: `ACESSO`, `HARDWARE`, `SOFTWARE`, `REDE`, `INCIDENTE` ou `SOLICITACAO`;
+- datas de criação, atualização e conclusão.
+
+As datas de criação e atualização são gerenciadas automaticamente pela aplicação. A data de conclusão é registrada quando o chamado é criado ou atualizado com o status `CONCLUIDO`.
 
 ## Execução
 
