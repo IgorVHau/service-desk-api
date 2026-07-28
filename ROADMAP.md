@@ -21,17 +21,20 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 - [x] Melhorar documentação de execução e consumo da API
 - [x] Dockerização da aplicação
 - [x] Corrigir e padronizar o tratamento de exceções
-- [ ] Reorganizar componentes nos pacotes adequados
-- [ ] Refinar DTOs de entrada e saída
+- [x] Refinar DTOs de entrada e saída
+- [x] Evitar exposição direta das entidades nos endpoints de chamados
+- [x] Enriquecer chamados com prioridade, categoria e data de conclusão
+- [ ] Revisar e padronizar a organização dos pacotes
 - [ ] Melhorar cobertura de testes
 
 ---
 
 ## 🚀 Fase 3 – Automação e infraestrutura
-- [ ] Criar pipeline de CI com GitHub Actions
+- [ ] Criar pipeline de CI com GitHub Actions para build e execução dos testes
+- [ ] Corrigir e validar a geração de metadados do Git no build
 - [ ] Integrar a aplicação com PostgreSQL
-- [ ] Adicionar testes de integração
 - [ ] Avaliar migrations com Flyway ou Liquibase
+- [ ] Adicionar testes de integração
 
 ---
 
@@ -39,5 +42,8 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 
 - [ ] Padronizar os nomes das classes
 - [ ] Adicionar paginação e ordenação
-- [ ] Implementar filtros por status e data
-- [ ] Evoluir entidades e relacionamentos do domínio
+- [ ] Implementar filtros combináveis por status, período, prioridade e categoria
+- [ ] Associar o chamado ao usuário solicitante
+- [ ] Permitir atribuição de um usuário responsável
+- [ ] Registrar histórico de alterações do chamado
+- [ ] Avaliar regras de SLA por prioridade

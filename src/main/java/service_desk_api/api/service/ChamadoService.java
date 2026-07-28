@@ -2,12 +2,15 @@ package service_desk_api.api.service;
 
 import org.springframework.stereotype.Service;
 
+import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.exception.BusinessException;
 import service_desk_api.api.exception.ResourceNotFoundException;
 import service_desk_api.api.model.Chamado;
+import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 import service_desk_api.api.repository.ChamadoRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +36,8 @@ public class ChamadoService {
 	}
 	
 	public Chamado criar(Chamado chamado) {
+		preencherConcluidoEm(chamado);
+		
 		return repository.save(chamado);
 	}
 	
@@ -44,7 +49,15 @@ public class ChamadoService {
 		chamadoAtual.setTitulo(novoChamado.getTitulo());
 		chamadoAtual.setDescricao(novoChamado.getDescricao());
 		chamadoAtual.setStatus(novoChamado.getStatus());
+		chamadoAtual.setPrioridade(novoChamado.getPrioridade());
+		chamadoAtual.setCategoria(novoChamado.getCategoria());
+		
+		if(novoChamado.getStatus() == Status.CONCLUIDO && chamadoAtual.getConcluidoEm() == null) {
+			chamadoAtual.setConcluidoEm(LocalDateTime.now());
+		}
+		
 		var chamadoAtualizado = repository.save(chamadoAtual);
+		
 		return chamadoAtualizado;
 	}
 	
@@ -54,8 +67,15 @@ public class ChamadoService {
 		}
 	}
 	
+	public void preencherConcluidoEm(Chamado chamado) {
+		if(chamado.getStatus() == Status.CONCLUIDO && chamado.getConcluidoEm() == null) {
+			chamado.setConcluidoEm(LocalDateTime.now());
+		}
+	}
+	
 	public void deletar(Long id) {
-		repository.deleteById(id);
+		Chamado chamado = buscarPorIdOuFalhar(id);
+		repository.delete(chamado);
 	}
 
 }

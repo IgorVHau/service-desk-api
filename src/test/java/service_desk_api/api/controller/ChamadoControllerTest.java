@@ -25,7 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import service_desk_api.api.exception.BusinessException;
 import service_desk_api.api.exception.ResourceNotFoundException;
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
+import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 import service_desk_api.api.service.ChamadoService;
 
@@ -50,7 +52,9 @@ class ChamadoControllerTest {
 			{
 				"titulo": "Teste na API",
 				"bescricao": "Nome do campo escrito incorretamente",
-				"status": "ABERTO"
+				"status": "ABERTO",
+				"categoria": "SOFTWARE",
+				"prioridade": "ALTA"
 			}
 				""";
 		
@@ -75,7 +79,9 @@ class ChamadoControllerTest {
 		String body = """
 			{
 				"descricao": "Título ausente na resposta",
-				"status": "ABERTO"
+				"status": "ABERTO",
+				"categoria": "SOFTWARE",
+				"prioridade": "ALTA"
 			}
 				""";
 		
@@ -101,7 +107,9 @@ class ChamadoControllerTest {
 		{
 			"titulo": "Teste na API",
 			"descricao": "Valor do status inválido",
-			"status": "ABERTA"
+			"status": "ABERTA",
+			"categoria": "SOFTWARE",
+			"prioridade": "ALTA"
 		}
 			""";
 		
@@ -127,7 +135,9 @@ class ChamadoControllerTest {
 				{
 					"titulo": "Teste na API",
 					"descricao": "JSON de resposta malformado"
-					"status": "ABERTO"
+					"status": "ABERTO",
+					"categoria": "SOFTWARE",
+					"prioridade": "ALTA"
 				}
 					""";
 		
@@ -173,7 +183,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste na API",
 							"descricao": "Recurso inexistente",
-							"status": "ABERTO"
+							"status": "ABERTO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""))
 		.andExpect(status().isNotFound())
@@ -182,6 +194,60 @@ class ChamadoControllerTest {
 		.andExpect(jsonPath("$.status").value(404))
 		.andExpect(jsonPath("$.detail").value("O recurso solicitado não foi encontrado."))
 		.andExpect(jsonPath("$.instance").value("/chamado"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+		
+		verifyNoInteractions(chamadoService);
+	}
+	
+	@DisplayName(value = "Deve retornar 405 ao usar POST em um chamado específico")
+	@Test
+	void deveRetornar405AoUsarPostEmChamadoEspecifico() throws Exception {
+		
+		mockMvc.perform(post("/chamados/2")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{
+							"titulo": "Teste na API",
+							"descricao": "Teste de método não permitido",
+							"status": "EM_ANDAMENTO",
+							"categoria": "REDE",
+							"prioridade": "MEDIA"
+						}
+						"""))
+		.andExpect(status().isMethodNotAllowed())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Método não permitido"))
+		.andExpect(jsonPath("$.status").value(405))
+		.andExpect(jsonPath("$.detail").value("O método HTTP utilizado não é permitido para este recurso."))
+		.andExpect(jsonPath("$.instance").value("/chamados/2"))
+		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
+		
+		verifyNoInteractions(chamadoService);
+	}
+	
+	@DisplayName(value = "Deve retornar 405 ao usar PUT sem especificar um id")
+	@Test
+	void deveRetornar405AoUsarPutSemEspecificarId() throws Exception {
+		
+		mockMvc.perform(put("/chamados")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(
+						"""
+						{
+							"titulo": "Teste na API",
+							"descricao": "Teste de método não permitido",
+							"status": "EM_ANDAMENTO",
+							"categoria": "REDE",
+							"prioridade": "MEDIA"
+						}
+						"""
+						))
+		.andExpect(status().isMethodNotAllowed())
+		.andExpect(jsonPath("$.type").value("about:blank"))
+		.andExpect(jsonPath("$.title").value("Método não permitido"))
+		.andExpect(jsonPath("$.status").value(405))
+		.andExpect(jsonPath("$.detail").value("O método HTTP utilizado não é permitido para este recurso."))
+		.andExpect(jsonPath("$.instance").value("/chamados"))
 		.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON));
 		
 		verifyNoInteractions(chamadoService);
@@ -200,7 +266,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste",
 							"descricao": "Teste",
-							"status": "CONCLUIDO"
+							"status": "CONCLUIDO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""
 				))
@@ -226,7 +294,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste",
 							"descricao": "Teste",
-							"status": "ABERTO"
+							"status": "ABERTO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""
 					))
@@ -248,6 +318,8 @@ class ChamadoControllerTest {
 				.titulo("Teste")
 				.descricao("Teste")
 				.status(Status.ABERTO)
+				.categoria(Categoria.SOFTWARE)
+				.prioridade(Prioridade.ALTA)
 				.build();
 		
 		when(chamadoService.atualizar(eq(1L), any(Chamado.class))).thenReturn(chamadoAtualizado);
@@ -258,7 +330,9 @@ class ChamadoControllerTest {
 						{
 							"titulo": "Teste",
 							"descricao": "Teste",
-							"status": "ABERTO"
+							"status": "ABERTO",
+							"categoria": "SOFTWARE",
+							"prioridade": "ALTA"
 						}
 						"""
 						))
