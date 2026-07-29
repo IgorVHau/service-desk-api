@@ -9,6 +9,9 @@
 </p>
 <p align="center">
 	<img src="https://img.shields.io/badge/Status-Em_evolução-blue">
+	<a href="https://github.com/IgorVHau/service-desk-api/actions/workflows/ci.yml">
+		<img src="https://github.com/IgorVHau/service-desk-api/actions/workflows/ci.yml/badge.svg" alt="CI"">
+	</a>
 </p>
 
 <br>
@@ -115,6 +118,7 @@ A autenticação e a autorização são tratadas transversalmente pelo Spring Se
 - Mockito
 - Docker
 - Maven
+- GitHub Actions
 
 ## Principais recursos
 
@@ -130,6 +134,7 @@ A autenticação e a autorização são tratadas transversalmente pelo Spring Se
 - Informações operacionais e de build com Spring Boot Actuator
 - Perfis separados para desenvolvimento e produção
 - Empacotamento com Docker multi-stage e execução como usuário não-root
+- Pipeline de integração contínua com GitHub Actions
 
 ## Domínio dos chamados
 
@@ -266,6 +271,11 @@ Execute todos os testes com:
 ```bash
 ./mvnw test
 ```
+
+> [!NOTE]
+> Para validar completamente o projeto antes de um commit ou Pull Request:
+> ```bash
+> ./mvnw clean verify
 
 No Windows:
 

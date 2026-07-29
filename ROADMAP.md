@@ -16,7 +16,7 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 
 ---
 
-## 🔄 Fase 2 – Consolidação (Atual)
+## 🔄 Fase 2 – Consolidação
 - [x] Diagrama de arquitetura
 - [x] Melhorar documentação de execução e consumo da API
 - [x] Dockerização da aplicação
@@ -30,7 +30,7 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 ---
 
 ## 🚀 Fase 3 – Automação e infraestrutura
-- [ ] Criar pipeline de CI com GitHub Actions para build e execução dos testes
+- [x] Criar pipeline de CI com GitHub Actions para build e execução dos testes
 - [ ] Corrigir e validar a geração de metadados do Git no build
 - [ ] Integrar a aplicação com PostgreSQL
 - [ ] Avaliar migrations com Flyway ou Liquibase
