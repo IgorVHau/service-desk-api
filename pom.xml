@@ -147,7 +147,6 @@
     			<configuration>
     				<failOnNoGitDirectory>false</failOnNoGitDirectory>
     				<generateGitPropertiesFile>true</generateGitPropertiesFile>
-    				<gitPropertiesPath>${project.build.outputDirectory}/META-INF</gitPropertiesPath>
     				<includeOnlyProperties>
       					<includeOnlyProperty>git.branch</includeOnlyProperty>
       					<includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>

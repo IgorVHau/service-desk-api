@@ -31,7 +31,7 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 
 ## 🚀 Fase 3 – Automação e infraestrutura
 - [x] Criar pipeline de CI com GitHub Actions para build e execução dos testes
-- [ ] Corrigir e validar a geração de metadados do Git no build
+- [x] Corrigir e validar a geração de metadados do Git no build
 - [ ] Integrar a aplicação com PostgreSQL
 - [ ] Avaliar migrations com Flyway ou Liquibase
 - [ ] Adicionar testes de integração
