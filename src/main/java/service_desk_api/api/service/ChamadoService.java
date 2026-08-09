@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.exception.BusinessException;
 import service_desk_api.api.exception.ResourceNotFoundException;
 import service_desk_api.api.model.Categoria;
@@ -18,7 +17,6 @@ import service_desk_api.api.specification.ChamadoSpecification;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,12 +27,6 @@ public class ChamadoService {
 	public ChamadoService(ChamadoRepository repository) {
 		this.repository = repository;
 	}
-	
-	/*
-	public Page<Chamado> listarTodos(Pageable pageable) {
-		return repository.findAll(pageable);
-	}
-	*/
 	
 	public Page<Chamado> listarTodos(
 			Status status, 

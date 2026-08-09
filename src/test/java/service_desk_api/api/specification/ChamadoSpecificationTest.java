@@ -46,7 +46,7 @@ public class ChamadoSpecificationTest {
 
         Chamado dentroDoPeriodo = criarChamado(
                 "Dentro do período",
-                LocalDateTime.of(2025,8,5,10,0)
+                LocalDateTime.of(2025, 8, 5, 10, 0)
         );
 
         Chamado depoisDoPeriodo = criarChamado(

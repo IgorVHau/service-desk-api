@@ -13,7 +13,6 @@ import service_desk_api.api.service.ChamadoService;
 import service_desk_api.api.dto.ApiResponse;
 import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.dto.ChamadoResponse;
-import service_desk_api.api.exception.ResourceNotFoundException;
 import service_desk_api.api.mapper.ChamadoMapper;
 import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
@@ -21,7 +20,6 @@ import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 
 import java.time.LocalDate;
-import java.util.List;
 
 
 @RestController
