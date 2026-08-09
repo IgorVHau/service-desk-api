@@ -32,17 +32,17 @@ Este roadmap descreve as etapas de evolução planejadas para o projeto, com foc
 ## 🚀 Fase 3 – Automação e infraestrutura
 - [x] Criar pipeline de CI com GitHub Actions para build e execução dos testes
 - [x] Corrigir e validar a geração de metadados do Git no build
+- [x] Adicionar primeiros testes de integração com JPA/H2
 - [ ] Integrar a aplicação com PostgreSQL
 - [ ] Avaliar migrations com Flyway ou Liquibase
-- [ ] Adicionar testes de integração
+- [ ] Ampliar testes de integração
 
 ---
 
 ## 🌱 Fase 4 – Evolução do domínio
-
+- [x] Adicionar paginação e ordenação
+- [x] Implementar filtros combináveis por status, período, prioridade e categoria
 - [ ] Padronizar os nomes das classes
-- [ ] Adicionar paginação e ordenação
-- [ ] Implementar filtros combináveis por status, período, prioridade e categoria
 - [ ] Associar o chamado ao usuário solicitante
 - [ ] Permitir atribuição de um usuário responsável
 - [ ] Registrar histórico de alterações do chamado
