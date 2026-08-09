@@ -7,6 +7,8 @@ import service_desk_api.api.model.Chamado;
 import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 
+import java.time.LocalDateTime;
+
 public final class ChamadoSpecification {
 	
 	private ChamadoSpecification() {
@@ -32,6 +34,20 @@ public final class ChamadoSpecification {
 				-> categoria == null 
 					? criteriaBuilder.conjunction()
 					: criteriaBuilder.equal(root.get("categoria"), categoria);
+	}
+
+	public static Specification<Chamado> criadoAPartirDe(LocalDateTime dataInicial) {
+		return (root, query, criteriaBuilder) ->
+				dataInicial == null
+					? criteriaBuilder.conjunction()
+					: criteriaBuilder.greaterThanOrEqualTo(root.get("criadoEm"), dataInicial);
+	}
+
+	public static Specification<Chamado> criadoAte(LocalDateTime dataFinal) {
+		return (root, query, criteriaBuilder) ->
+				dataFinal == null
+						? criteriaBuilder.conjunction()
+						: criteriaBuilder.lessThanOrEqualTo(root.get("criadoEm"), dataFinal);
 	}
 
 }

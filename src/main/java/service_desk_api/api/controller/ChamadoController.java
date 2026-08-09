@@ -2,6 +2,7 @@ package service_desk_api.api.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import service_desk_api.api.model.Chamado;
 import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -37,8 +39,10 @@ public class ChamadoController {
 			@RequestParam(required = false) Status status,
 			@RequestParam(required = false) Prioridade prioridade,
 			@RequestParam(required = false) Categoria categoria,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate criadoDe,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate criadoAte,
 			Pageable pageable) {
-		Page<ChamadoResponse> chamados = service.listarTodos(status, prioridade, categoria, pageable)
+		Page<ChamadoResponse> chamados = service.listarTodos(status, prioridade, categoria, criadoDe, criadoAte, pageable)
 				.map(ChamadoMapper::paraResponse);
 		
 		return ResponseEntity

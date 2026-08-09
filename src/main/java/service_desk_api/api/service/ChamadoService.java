@@ -15,7 +15,9 @@ import service_desk_api.api.model.Status;
 import service_desk_api.api.repository.ChamadoRepository;
 import service_desk_api.api.specification.ChamadoSpecification;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,15 +40,24 @@ public class ChamadoService {
 			Status status, 
 			Prioridade prioridade, 
 			Categoria categoria,
+			LocalDate criadoDe,
+			LocalDate criadoAte,
 			Pageable pageable
 			) {
-		Specification<Chamado> specificationStatus = 
-				ChamadoSpecification.comStatus(status);
+		LocalDateTime inicio = criadoDe != null
+				? criadoDe.atStartOfDay()
+				: null;
+
+		LocalDateTime fim = criadoAte != null
+				? criadoAte.atTime(LocalTime.MAX)
+				: null;
 		
 		Specification<Chamado> specification = Specification
 				.where(ChamadoSpecification.comStatus(status))
 				.and(ChamadoSpecification.comPrioridade(prioridade))
-				.and(ChamadoSpecification.comCategoria(categoria));
+				.and(ChamadoSpecification.comCategoria(categoria))
+				.and(ChamadoSpecification.criadoAPartirDe(inicio))
+				.and(ChamadoSpecification.criadoAte(fim));
 		
 		return repository.findAll(specification, pageable);
 	}

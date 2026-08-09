@@ -1,9 +1,6 @@
 package service_desk_api.api.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -13,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -91,6 +89,8 @@ class ChamadoControllerTest {
 				nullable(Status.class),
 				nullable(Prioridade.class),
 				nullable(Categoria.class),
+				nullable(LocalDate.class),
+				nullable(LocalDate.class),
 				any(Pageable.class)))
 			.thenReturn(pagina);
 		
@@ -113,9 +113,11 @@ class ChamadoControllerTest {
 		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
 		
 		verify(chamadoService).listarTodos(
-				statusCaptor.capture(),
-				prioridadeCaptor.capture(),
-				categoriaCaptor.capture(),
+				isNull(),
+				isNull(),
+				isNull(),
+				isNull(),
+				isNull(),
 				pageableCaptor.capture());
 		
 		Pageable pageableCapturado = pageableCaptor.getValue();
