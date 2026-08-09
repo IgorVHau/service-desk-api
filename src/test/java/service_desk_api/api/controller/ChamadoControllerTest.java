@@ -16,6 +16,8 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -103,6 +105,14 @@ class ChamadoControllerTest {
 		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
 		verify(chamadoService).listarTodos(pageableCaptor.capture());
 		Pageable pageableCapturado = pageableCaptor.getValue();
+		
+		assertEquals(0, pageableCapturado.getPageNumber());
+		assertEquals(2, pageableCapturado.getPageSize());
+		
+		Sort.Order ordem = pageableCapturado.getSort().getOrderFor("id");
+		
+		assertNotNull(ordem);
+		assertEquals(Sort.Direction.DESC, ordem.getDirection());
 	}
 	
 	@DisplayName(value = "Deve retornar 400 quando houver campo desconhecido")

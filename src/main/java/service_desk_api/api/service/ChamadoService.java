@@ -2,15 +2,18 @@ package service_desk_api.api.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.exception.BusinessException;
 import service_desk_api.api.exception.ResourceNotFoundException;
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
 import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 import service_desk_api.api.repository.ChamadoRepository;
+import service_desk_api.api.specification.ChamadoSpecification;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +28,27 @@ public class ChamadoService {
 		this.repository = repository;
 	}
 	
+	/*
 	public Page<Chamado> listarTodos(Pageable pageable) {
 		return repository.findAll(pageable);
+	}
+	*/
+	
+	public Page<Chamado> listarTodos(
+			Status status, 
+			Prioridade prioridade, 
+			Categoria categoria,
+			Pageable pageable
+			) {
+		Specification<Chamado> specificationStatus = 
+				ChamadoSpecification.comStatus(status);
+		
+		Specification<Chamado> specification = Specification
+				.where(ChamadoSpecification.comStatus(status))
+				.and(ChamadoSpecification.comPrioridade(prioridade))
+				.and(ChamadoSpecification.comCategoria(categoria));
+		
+		return repository.findAll(specification, pageable);
 	}
 	
 	public Optional<Chamado> buscarPorId(Long id) {

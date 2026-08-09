@@ -14,7 +14,10 @@ import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.dto.ChamadoResponse;
 import service_desk_api.api.exception.ResourceNotFoundException;
 import service_desk_api.api.mapper.ChamadoMapper;
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
+import service_desk_api.api.model.Prioridade;
+import service_desk_api.api.model.Status;
 
 import java.util.List;
 
@@ -30,8 +33,12 @@ public class ChamadoController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<Page<ChamadoResponse>>> listar(Pageable pageable) {
-		Page<ChamadoResponse> chamados = service.listarTodos(pageable)
+	public ResponseEntity<ApiResponse<Page<ChamadoResponse>>> listar(
+			@RequestParam(required = false) Status status,
+			@RequestParam(required = false) Prioridade prioridade,
+			@RequestParam(required = false) Categoria categoria,
+			Pageable pageable) {
+		Page<ChamadoResponse> chamados = service.listarTodos(status, prioridade, categoria, pageable)
 				.map(ChamadoMapper::paraResponse);
 		
 		return ResponseEntity
