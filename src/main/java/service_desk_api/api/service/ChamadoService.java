@@ -1,5 +1,7 @@
 package service_desk_api.api.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import service_desk_api.api.dto.ChamadoRequest;
@@ -23,8 +25,8 @@ public class ChamadoService {
 		this.repository = repository;
 	}
 	
-	public List<Chamado> listarTodos() {
-		return repository.findAll();
+	public Page<Chamado> listarTodos(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 	
 	public Optional<Chamado> buscarPorId(Long id) {

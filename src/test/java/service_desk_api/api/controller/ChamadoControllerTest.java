@@ -3,6 +3,7 @@ package service_desk_api.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -10,16 +11,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.hamcrest.Matchers.containsString;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,6 +53,57 @@ class ChamadoControllerTest {
 	
 	@MockBean
 	private ChamadoService chamadoService;
+	
+	@DisplayName(value = "Deve retornar 200 ao listar chamados paginados")
+	@Test
+	void deveRetornar200AoListarChamadosPaginados() throws Exception {
+		
+		Chamado chamado1 = Chamado.builder()
+				.id(1L)
+				.titulo("Problema de acesso")
+				.descricao("Usuário sem acesso ao sistema")
+		        .status(Status.ABERTO)
+		        .prioridade(Prioridade.ALTA)
+		        .categoria(Categoria.ACESSO)
+		        .build();
+		
+		Chamado chamado2 = Chamado.builder()
+				.id(2L)
+		        .titulo("Falha de rede")
+		        .descricao("Instabilidade de conexão")
+		        .status(Status.EM_ANDAMENTO)
+		        .prioridade(Prioridade.MEDIA)
+		        .categoria(Categoria.REDE)
+		        .build();
+		
+		Pageable pageable = PageRequest.of(0, 2, Sort.by("id").descending());
+		
+		Page<Chamado> pagina = new PageImpl<>(
+				List.of(chamado1,chamado2),
+				pageable,
+				5
+			);
+		
+		when(chamadoService.listarTodos(any(Pageable.class)))
+			.thenReturn(pagina);
+		
+		mockMvc.perform(get("/chamados")
+				.param("page", "0")
+				.param("size", "2")
+				.param("sort", "id,desc"))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.data.content").isArray())
+		.andExpect(jsonPath("$.data.content.length()").value(2))
+		.andExpect(jsonPath("$.data.number").value(0))
+		.andExpect(jsonPath("$.data.size").value(2))
+		.andExpect(jsonPath("$.data.totalElements").value(5))
+		.andExpect(jsonPath("$.data.totalPages").value(3))
+		.andExpect(jsonPath("$.data.numberOfElements").value(2));
+		
+		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+		verify(chamadoService).listarTodos(pageableCaptor.capture());
+		Pageable pageableCapturado = pageableCaptor.getValue();
+	}
 	
 	@DisplayName(value = "Deve retornar 400 quando houver campo desconhecido")
 	@Test

@@ -1,5 +1,7 @@
 package service_desk_api.api.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +30,9 @@ public class ChamadoController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<ChamadoResponse>>> listar() {
-		List<ChamadoResponse> chamados = service.listarTodos()
-				.stream()
-				.map(ChamadoMapper::paraResponse)
-				.toList();
+	public ResponseEntity<ApiResponse<Page<ChamadoResponse>>> listar(Pageable pageable) {
+		Page<ChamadoResponse> chamados = service.listarTodos(pageable)
+				.map(ChamadoMapper::paraResponse);
 		
 		return ResponseEntity
 				.status(HttpStatus.OK)
