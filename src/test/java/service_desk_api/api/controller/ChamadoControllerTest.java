@@ -3,6 +3,7 @@ package service_desk_api.api.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -86,7 +87,11 @@ class ChamadoControllerTest {
 				5
 			);
 		
-		when(chamadoService.listarTodos(any(Pageable.class)))
+		when(chamadoService.listarTodos(
+				nullable(Status.class),
+				nullable(Prioridade.class),
+				nullable(Categoria.class),
+				any(Pageable.class)))
 			.thenReturn(pagina);
 		
 		mockMvc.perform(get("/chamados")
@@ -102,10 +107,19 @@ class ChamadoControllerTest {
 		.andExpect(jsonPath("$.data.totalPages").value(3))
 		.andExpect(jsonPath("$.data.numberOfElements").value(2));
 		
+		ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
+		ArgumentCaptor<Prioridade> prioridadeCaptor = ArgumentCaptor.forClass(Prioridade.class);
+		ArgumentCaptor<Categoria> categoriaCaptor = ArgumentCaptor.forClass(Categoria.class);
 		ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-		verify(chamadoService).listarTodos(pageableCaptor.capture());
-		Pageable pageableCapturado = pageableCaptor.getValue();
 		
+		verify(chamadoService).listarTodos(
+				statusCaptor.capture(),
+				prioridadeCaptor.capture(),
+				categoriaCaptor.capture(),
+				pageableCaptor.capture());
+		
+		Pageable pageableCapturado = pageableCaptor.getValue();
+
 		assertEquals(0, pageableCapturado.getPageNumber());
 		assertEquals(2, pageableCapturado.getPageSize());
 		
