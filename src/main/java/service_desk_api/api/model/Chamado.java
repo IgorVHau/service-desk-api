@@ -51,8 +51,15 @@ public class Chamado {
 	
 	@PrePersist
 	protected void onCreate() {
-		this.criadoEm = LocalDateTime.now();
-		this.atualizadoEm = LocalDateTime.now();
+		LocalDateTime agora = LocalDateTime.now();
+
+		if (this.criadoEm == null) {
+			this.criadoEm = agora;
+		}
+
+		if (this.atualizadoEm == null) {
+			this.atualizadoEm = agora;
+		}
 	}
 	
 	@PreUpdate
