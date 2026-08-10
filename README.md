@@ -23,6 +23,7 @@
 - [Tecnologias](#tecnologias)
 - [Principais recursos](#principais-recursos)
 - [Domínio dos chamados](#domínio-dos-chamados)
+- [Consulta de chamados](#consulta-de-chamados)
 - [Execução](#execução)
 - [Segurança](#segurança)
 - [Swagger](#swagger)
@@ -135,6 +136,8 @@ A autenticação e a autorização são tratadas transversalmente pelo Spring Se
 - Perfis separados para desenvolvimento e produção
 - Empacotamento com Docker multi-stage e execução como usuário não-root
 - Pipeline de integração contínua com GitHub Actions
+- Paginação e ordenação de listagem de chamados
+- Filtros combináveis por status, prioridade, categoria e período de criação
 
 ## Domínio dos chamados
 
@@ -147,6 +150,47 @@ Cada chamado possui:
 - datas de criação, atualização e conclusão.
 
 As datas de criação e atualização são gerenciadas automaticamente pela aplicação. A data de conclusão é registrada quando o chamado é criado ou atualizado com o status `CONCLUIDO`.
+
+## Consulta de chamados
+
+A listagem de chamados suporta paginação, ordenação e filtros opcionais por status, prioridade, categoria e período de criação. 
+
+### Paginação e ordenação
+
+Parâmetros disponíveis:
+
+- `page`: número da página, iniciando em `0`;
+- `size`: quantidade de registros por página;
+- `sort`: campo e direção da ordenação no formato `campo, direção`.
+
+Exemplo:
+
+```http
+GET /chamados?page=0&size=10&sort=criadoEm,desc
+```
+
+### Filtros
+
+Os filtros podem ser utilizados individualmente ou combinados.
+
+| Parâmetro    | Descrição / formato                  |
+|:-------------|:-------------------------------------|
+| `status`     | Filtra pelo status do chamado        |
+| `prioridade` | Filtra pela prioridade do chamado    |
+| `categoria`  | Filtra pela categoria do chamado     |
+| `criadoDe`   | Data inicial no formato `yyyy-MM-dd` |
+| `criadoAte`  | Data final no formato `yyyy-MM-dd`   |
+
+Os valores aceitos para `status`, `prioridade` e `categoria` correspondem aos valores descritos na seção [Domínio dos chamados](#domínio-dos-chamados).
+
+Exemplos:
+
+```http 
+GET /chamados?status=ABERTO
+GET /chamados?prioridade=ALTA&categoria=SOFTWARE
+GET /chamados?criadoDe=2025-08-01&criadoAte=2025-08-09
+GET /chamados?status=CONCLUIDO&prioridade=ALTA&criadoDe=2025-08-01&criadoAte=2025-08-09
+```
 
 ## Execução
 
@@ -261,10 +305,11 @@ Exemplo da interface do Swagger UI:
 
 ## Testes
 
-O projeto utiliza JUnit 5, Mockito e MockMvc em dois níveis:
+O projeto utiliza JUnit 5, Mockito e MockMvc, além de testes de persistência com Spring Data JPA:
 
 - **[Testes unitários de serviço](src/test/java/service_desk_api/api/service/ChamadoServiceTest.java):** validam as regras de negócio com dependências simuladas.
 - **[Testes da camada Web](src/test/java/service_desk_api/api/controller/ChamadoControllerTest.java):** validam status HTTP, respostas JSON e tratamento de exceções.
+- **[Testes de persistência e Specifications](src/test/java/service_desk_api/api/specification/ChamadoSpecificationTest.java):** validam consultas dinâmicas com `Specification`, Spring Data JPA e banco H2 em memória.
 
 Execute todos os testes com:
 
@@ -276,6 +321,7 @@ Execute todos os testes com:
 > Para validar completamente o projeto antes de um commit ou Pull Request:
 > ```bash
 > ./mvnw clean verify
+> ```
 
 No Windows:
 

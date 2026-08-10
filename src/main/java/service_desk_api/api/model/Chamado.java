@@ -2,12 +2,22 @@ package service_desk_api.api.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
 @Data
@@ -51,8 +61,15 @@ public class Chamado {
 	
 	@PrePersist
 	protected void onCreate() {
-		this.criadoEm = LocalDateTime.now();
-		this.atualizadoEm = LocalDateTime.now();
+		LocalDateTime agora = LocalDateTime.now();
+
+		if (this.criadoEm == null) {
+			this.criadoEm = agora;
+		}
+
+		if (this.atualizadoEm == null) {
+			this.atualizadoEm = agora;
+		}
 	}
 	
 	@PreUpdate

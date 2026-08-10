@@ -1,5 +1,8 @@
 package service_desk_api.api.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,11 +13,13 @@ import service_desk_api.api.service.ChamadoService;
 import service_desk_api.api.dto.ApiResponse;
 import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.dto.ChamadoResponse;
-import service_desk_api.api.exception.ResourceNotFoundException;
 import service_desk_api.api.mapper.ChamadoMapper;
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
+import service_desk_api.api.model.Prioridade;
+import service_desk_api.api.model.Status;
 
-import java.util.List;
+import java.time.LocalDate;
 
 
 @RestController
@@ -28,11 +33,15 @@ public class ChamadoController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<ChamadoResponse>>> listar() {
-		List<ChamadoResponse> chamados = service.listarTodos()
-				.stream()
-				.map(ChamadoMapper::paraResponse)
-				.toList();
+	public ResponseEntity<ApiResponse<Page<ChamadoResponse>>> listar(
+			@RequestParam(required = false) Status status,
+			@RequestParam(required = false) Prioridade prioridade,
+			@RequestParam(required = false) Categoria categoria,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate criadoDe,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate criadoAte,
+			Pageable pageable) {
+		Page<ChamadoResponse> chamados = service.listarTodos(status, prioridade, categoria, criadoDe, criadoAte, pageable)
+				.map(ChamadoMapper::paraResponse);
 		
 		return ResponseEntity
 				.status(HttpStatus.OK)

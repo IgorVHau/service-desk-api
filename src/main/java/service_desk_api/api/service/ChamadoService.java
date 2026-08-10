@@ -1,17 +1,22 @@
 package service_desk_api.api.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import service_desk_api.api.dto.ChamadoRequest;
 import service_desk_api.api.exception.BusinessException;
 import service_desk_api.api.exception.ResourceNotFoundException;
+import service_desk_api.api.model.Categoria;
 import service_desk_api.api.model.Chamado;
 import service_desk_api.api.model.Prioridade;
 import service_desk_api.api.model.Status;
 import service_desk_api.api.repository.ChamadoRepository;
+import service_desk_api.api.specification.ChamadoSpecification;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -23,8 +28,30 @@ public class ChamadoService {
 		this.repository = repository;
 	}
 	
-	public List<Chamado> listarTodos() {
-		return repository.findAll();
+	public Page<Chamado> listarTodos(
+			Status status, 
+			Prioridade prioridade, 
+			Categoria categoria,
+			LocalDate criadoDe,
+			LocalDate criadoAte,
+			Pageable pageable
+			) {
+		LocalDateTime inicio = criadoDe != null
+				? criadoDe.atStartOfDay()
+				: null;
+
+		LocalDateTime fim = criadoAte != null
+				? criadoAte.atTime(LocalTime.MAX)
+				: null;
+		
+		Specification<Chamado> specification = Specification
+				.where(ChamadoSpecification.comStatus(status))
+				.and(ChamadoSpecification.comPrioridade(prioridade))
+				.and(ChamadoSpecification.comCategoria(categoria))
+				.and(ChamadoSpecification.criadoAPartirDe(inicio))
+				.and(ChamadoSpecification.criadoAte(fim));
+		
+		return repository.findAll(specification, pageable);
 	}
 	
 	public Optional<Chamado> buscarPorId(Long id) {
