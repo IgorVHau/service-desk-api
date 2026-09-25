@@ -32,3 +32,9 @@ jobs:
       
       - name: Executar build e testes
         run: ./mvnw --batch-mode clean verify
+
+      - name: Salvar JAR como artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: service-desk-api
+          path: target/service-desk-api.jar
