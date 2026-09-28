@@ -44,6 +44,7 @@ public class SecurityConfig { //extends WebSecurityConfiguration {
 					.requestMatchers(
 							"/h2-console/**",
 							"/auth/login",
+							"/actuator/health",
 							"/v3/api-docs/**",
 							"/swagger-ui/**",
 							"/swagger-ui.html"
