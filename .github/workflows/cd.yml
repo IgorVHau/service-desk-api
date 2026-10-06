@@ -17,3 +17,11 @@ jobs:
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main'
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          aws-region: sa-east-1
+          role-to-assume: arn:aws:iam::<ACCOUNT-ID>:role/GitHubActions-ServiceDeskAPI-ECR
+          role-session-name: ServiceDeskAPICD
