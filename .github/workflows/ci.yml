@@ -66,7 +66,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v6.3.0
         with:
           aws-region: sa-east-1
-          role-to-assume: arn:aws:iam::888696595907:role/GitHubActions-ServiceDeskAPI-ECR
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           role-session-name: ServiceDeskAPI
 
       - name: Login no Amazon ECR
