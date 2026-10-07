@@ -1,0 +1,50 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          aws-region: sa-east-1
+          role-to-assume: arn:aws:iam::<ACCOUNT-ID>:role/GitHubActions-ServiceDeskAPI-ECR
+          role-session-name: ServiceDeskAPICD
+
+      - name: Baixar Task Definition atual
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition service-desk-api \
+            --query taskDefinition \
+            > task-definition.json
+
+      - name: Atualizar imagem na Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: service-desk-api
+          image: <ACCOUNT-ID>.dkr.ecr.sa-east-1.amazonaws.com/service-desk-api:${{ github.event.workflow_run.head_sha }}
+
+      - name: Fazer deploy no Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: service-desk-api-service
+          cluster: service-desk-cluster
+          wait-for-service-stability: true
