@@ -40,3 +40,11 @@ jobs:
           task-definition: task-definition.json
           container-name: service-desk-api
           image: <ACCOUNT-ID>.dkr.ecr.sa-east-1.amazonaws.com/service-desk-api:${{ github.event.workflow_run.head_sha }}
+
+      - name: Fazer deploy no Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: service-desk-api-service
+          cluster: service-desk-cluster
+          wait-for-service-stability: true
