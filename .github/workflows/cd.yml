@@ -25,3 +25,18 @@ jobs:
           aws-region: sa-east-1
           role-to-assume: arn:aws:iam::<ACCOUNT-ID>:role/GitHubActions-ServiceDeskAPI-ECR
           role-session-name: ServiceDeskAPICD
+
+      - name: Baixar Task Definition atual
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition service-desk-api \
+            --query taskDefinition \
+            > task-definition.json
+
+      - name: Atualizar imagem na Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: service-desk-api
+          image: <ACCOUNT-ID>.dkr.ecr.sa-east-1.amazonaws.com/service-desk-api:${{ github.event.workflow_run.head_sha }}
